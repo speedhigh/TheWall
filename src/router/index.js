@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    redirect: '/order?doctorid=uuiddoctor123&saleid=uuidsaleid111&proid=1'
+    redirect: '/order?doctorid=uuiddoctor123&saleid=uuidsaleid111&proid=1&date=1658449347880'
   },
   /* 商品详情页（首页） */
   {
@@ -49,6 +49,12 @@ const routes = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes,
+})
+
+router.beforeEach((to, from, next) => {
+  window.scrollTo({ top: 0, behavior: "instant" })
+  document.documentElement.scrollTop = document.body.scrollTop = 0
+  next()
 })
 
 export default router

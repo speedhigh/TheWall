@@ -34,6 +34,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Dialog } from 'vant'
 import api from '/src/api/index.js'
 import BaseHeader from '/src/components/BaseHeader.vue'
 import OrderBanner from './OrderBanner.vue'
@@ -43,13 +44,18 @@ import SectionDetail from './SectionDetail.vue'
 
 const route = useRoute()
 const router = useRouter()
+sessionStorage.setItem('href', window.location.href)
+
 const data = ref({})
-api.get('/open/product/getDetail', {id: route.query.proid}).then((res) => {
-  console.log(res.data.data)
-  Object.assign(data.value, res.data.data)
-})
+if(!route.query.doctorid || !route.query.saleid || !route.query.proid) {
+  Dialog.alert({ message: '访问地址不正确，无法进行购买，请及时联系我们为您发送新地址。' })
+} else {
+  api.get('/open/product/getDetail', {id: route.query.proid, href: window.location.href}).then((res) => {
+    Object.assign(data.value, res.data.data)
+  })
+}
 // 立即购买
 const toBuy = function() {
-  router.push({ path: '/comfirmorder', query: { doctorid: route.query.doctorid, saleid: route.query.saleid, proid: route.query.proid }})
+  router.push({ path: '/comfirmorder', query: { doctorid: route.query.doctorid, saleid: route.query.saleid, proid: route.query.proid, date: route.query.date }})
 }
 </script>
