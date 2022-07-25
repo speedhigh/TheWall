@@ -5,6 +5,8 @@ import router from './router'
 import 'vant/es/toast/style'
 import 'vant/es/dialog/style'
 import {
+  Collapse, 
+  CollapseItem,
   Empty,
   Form,
   Field,
@@ -21,6 +23,8 @@ import {
 const app = createApp(App)
 
 app.use(router)
+app.use(Collapse)
+app.use(CollapseItem)
 app.use(Empty)
 app.use(Form)
 app.use(Field)

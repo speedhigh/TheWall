@@ -3,21 +3,21 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    redirect: '/order?doctorid=uuiddoctor123&saleid=uuidsaleid111&proid=1&date=1658449347880'
+    redirect: '/order?doctorid=1658711958274f0sw9Ni8&saleid=1234&proid=1'
   },
   /* 商品详情页（首页） */
   {
     path: '/order',
     name: 'OrderDetail',
     component:() => import('../views/order/index.vue'),
-    meta: { title: '药品详情', hasFooter: true }
+    meta: { title: '药品详情' }
   },
   /* 填写信息/提交订单 */
   {
     path: '/comfirmorder',
     name: 'ConfirmOrder',
     component:() => import('../views/confirmorder/index.vue'),
-    meta: { title: '填写信息', hasFooter: true }
+    meta: { title: '填写信息' }
   },
   /* 物流 */
   {

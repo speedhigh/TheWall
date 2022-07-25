@@ -1,5 +1,8 @@
 <template>
-  <div class="relative bg-white" :style="{height: bodyHeight + 'px'}">
+  <div 
+    class="relative bg-white pt-11"
+    :style="{height: bodyHeight + 'px'}"
+  >
     <!-- header -->
     <base-header />
     <!-- form -->

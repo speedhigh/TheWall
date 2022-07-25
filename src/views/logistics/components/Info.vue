@@ -1,36 +1,26 @@
 <template>
-  <div class="relative">
+  <div class="relative pt-11">
     <!-- header -->
     <base-header />
     <!-- main -->
-    <main v-if="!showEmpty" class="space-y-3.5">
-      <!-- 1`section-info -->
-      <section class="bg-white h-[8.25rem] p-4 flex space-x-4">
-        <img :src="data.thumbnail" alt="物流订单信息" width="100" height="100" class="rounded-md flex-shrink-0">
-        <div class="text-xs space-y-3">
-          <p>订单状态：{{ data.orderstate }}</p>
-          <p>物流公司：{{ data.expresscompany }}</p>
-          <p>运单号码：{{ data.expressnum }}</p>
-          <p>订单号：{{ data.orderid }}</p>
+    <div v-if="!showEmpty">
+      <div 
+        v-for="(item, index) in list" 
+        :key="index" 
+        class="space-y-3.5"
+      >
+        <!-- 现在的物流信息 -->
+        <div v-if="!index">
+          <logistics-card :data="item" />
         </div>
-      </section>
-      <!-- 2`section-address -->
-      <section class="bg-white p-4 space-y-2">
-        <p class="text-base">{{ data.addname }}<span class="ml-2">{{ data.addmobile }}</span></p>
-        <p class="text-xs text-gray-500">{{ data.adddetail }}</p>
-      </section>
-      <!-- 3`section-step -->
-      <section 
-        v-if="data.expressMain.length > 0"
-        class="bg-white p-4">
-        <van-steps direction="vertical" :active="0">
-          <van-step v-for="item in data.expressMain" :key="item.id">
-            <h3>{{ item.content }}</h3>
-            <p>{{ dayjs(item.inserttime).format('YYYY-MM-DD hh:mm:ss') }}</p>
-          </van-step>
-        </van-steps>
-      </section>
-    </main>
+        <!-- 过去的物流信息 -->
+        <van-collapse v-else v-model="activeNames" class="mt-3.5">
+          <van-collapse-item :title="'往期订单' + item.orderid + '（' + item.orderstate + '）'" :name="item.orderid">
+            <logistics-card :data="item" />
+          </van-collapse-item>
+        </van-collapse>
+      </div>
+    </div>
     <!-- empty -->
     <van-empty v-else description="暂无物流信息" class="mt-36" />
   </div>
@@ -40,20 +30,25 @@
 import { ref } from 'vue'
 import api from '/src/api/index.js'
 import { Toast } from 'vant'
-import dayjs from "dayjs"
+import LogisticsCard from './LogisticsCard.vue'
 
 const showEmpty = ref(false)
-const data = ref({
-  expressMain: []
-})
+const list = ref([])
+const activeNames = ref([''])
 
 api.get('/open/express/get', {mobile: localStorage.getItem('mobile')}).then((res) => {
   if(res.data.code === 20000) {
     console.log(res.data)
-    Object.assign(data.value, res.data.data)
+    list.value = res.data.data
   } else {
     Toast.fail(res.data.msg)
     showEmpty.value = true
   }
 })
 </script>
+
+<style>
+.van-collapse-item__content {
+  @apply p-0 bg-gray-50
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative pt-11 pb-12">
 
     <!-- header -->
     <base-header />
@@ -239,12 +239,12 @@ const onSubmit2 = () => {
   api.post('/open/useraddress/post', addressData).then((res) => {
     if(res.data.code === 20000) {
       // 提交订单
-      const submitData = {doctorid: route.query.doctorid, saleid: route.query.saleid, proid: route.query.proid, num: stepperValue.value, href: sessionStorage.getItem('href')}
+      const submitData = {doctorid: route.query.doctorid, saleid: route.query.saleid, proid: route.query.proid, num: stepperValue.value, addressid: res.data.data}
       api.get('/open/order/submit', submitData).then((res) => {
         if(res.data.code === 20000) {
           // 立即购买
           api.post('/open/pay/alipay', {orderid: route.query.proid}, true).then((res) => {
-            // window.location.href = res.data.data
+            window.location.href = res.data.data
           })
         }
       })

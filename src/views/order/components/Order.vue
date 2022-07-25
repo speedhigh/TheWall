@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="relative pt-11 pb-12">
     <!-- header -->
     <base-header />
     <!-- banner -->
@@ -44,16 +44,22 @@ import SectionDetail from './SectionDetail.vue'
 
 const route = useRoute()
 const router = useRouter()
-sessionStorage.setItem('href', window.location.href)
 
 const data = ref({})
-if(!route.query.doctorid || !route.query.saleid || !route.query.proid) {
-  Dialog.alert({ message: '访问地址不正确，无法进行购买，请及时联系我们为您发送新地址。' })
-} else {
-  api.get('/open/product/getDetail', {id: route.query.proid, href: window.location.href}).then((res) => {
-    Object.assign(data.value, res.data.data)
+if(route.query.doctorid && route.query.saleid && route.query.proid) {
+   api.get('/open/product/getDetail', {id: route.query.proid, doctoruuid: route.query.doctorid}).then((res) => {
+    if(res.data.code === 20001) {
+      Dialog.alert({ message: '这个医生下线了' }).then(() => {
+        window.location.href = res.data.msg
+      })
+      return
+    }
+    if(res.data.code === 20000) Object.assign(data.value, res.data.data)
   })
+} else {
+  Dialog.alert({ message: '访问链接不正确，无法进行购买，请及时联系我们为您发送新链接。' })
 }
+
 // 立即购买
 const toBuy = function() {
   router.push({ path: '/comfirmorder', query: { doctorid: route.query.doctorid, saleid: route.query.saleid, proid: route.query.proid, date: route.query.date }})
